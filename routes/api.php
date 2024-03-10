@@ -14,6 +14,7 @@ use App\Http\Controllers\API\TranslateUserController;
 |
 */
 Route::get("/translation", [TranslateUserController::class, 'index']);
+Route::post('/update-text/{id}', 'ApiController@updateText');
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
