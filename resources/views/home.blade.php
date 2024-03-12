@@ -12,7 +12,7 @@
       crossorigin="anonymous"
     />
     <link rel="icon" href="./exceIcon.png" type="favicon/ico" />
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <script
       type="text/javascript"
       src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"
@@ -25,6 +25,16 @@
     <title>Excel File Importer with Dynamic Table</title>
   </head>
   <body>
+    @auth
+    <a href="{{ route('logout') }}"
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style=" margin:10px 400px 10px" class="btn btn-primary">
+       Logout
+    </a>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+    @endauth
     <div class="container">
       <!-- <button id="btn_import" class="btn btn-primary">Import Excel</button> -->
       <input type="file" id="excel_file" style="display: none" />
@@ -110,9 +120,11 @@
     textarea.disabled = true;
     textarea.style.background = "lightgray";
     alert("You have edited this text successfully!\nAnd it can't be edited anymore.");
-    
-    const itemId = row.dataset.itemId;
+    const ID = row.querySelector("#wanted_id").innerText;
+    console.log("Item ID is: "+ ID);
+    const itemId = ID;
     const updatedText = textarea.value;
+    console.log("Updated Text is "+ updatedText)
     updateDatabaseText(itemId, updatedText);
     const editButton = row.querySelector(".btn-success");
     const saveButton = row.querySelector(".btn-primary");
@@ -132,11 +144,10 @@
     const modalBody = modal.querySelector(".modal-body");
  
     modalBody.innerHTML = `
-      <p><strong>Item Code:</strong> ${itemCode}</p>
-      <p><strong>English Description:</strong> ${englishDescription}</p>
-      <p><strong>Arabic Description:</strong> ${arabicDescription}</p>
+      <p><strong>Item Code:</strong><p>${itemCode}</p></p>
+      <p><strong>English Description:</strong> <p>${englishDescription}</p></p>
+      <p><strong>Arabic Description:</strong> <p>${arabicDescription}</p></p>
     `;
- 
     modal.classList.add("show");
     modal.style.display = "block";
  
@@ -184,6 +195,6 @@
   });
 
 </script>
-<button style=" margin:10px 180px 0px" id="exportButton" class="btn btn-primary">Export as CSV</button>
+<button style=" margin:10px 400px 0px" id="exportButton" class="btn btn-primary">Export as CSV</button>
 </body>
 </html>

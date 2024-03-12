@@ -182,7 +182,7 @@ function displayEnglishDescription(englishDescription) {
   
   function updateDatabaseText(itemId, updatedText) {
     let url = `http://localhost:8000/api/update-text/${itemId}`; 
-    console.log("hello" + itemId);
+    console.log("itemID: " + itemId);
     let data = { text: updatedText };
     fetch(url, {
         method: 'POST',
