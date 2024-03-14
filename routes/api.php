@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TranslateUserController;
+use App\Http\Controllers\ApiController;
+
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +18,7 @@ use App\Http\Controllers\API\TranslateUserController;
 |
 */
 Route::get("/translation", [TranslateUserController::class, 'index']);
+Route::post('/update-text/{id}', [ApiController::class, 'updateText']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

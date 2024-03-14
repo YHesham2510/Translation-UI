@@ -22,11 +22,11 @@ class translationSeeder extends Seeder
         Log::info($data);
         foreach ($data as $row) {
             TranslateUsers::create([
-                "id" => $row[0],
-                "item_code" => $row[1],
-                "arabic_translation" => $row[2],
-                "english_translation" => $row[3],
-                "username" => $row[4],
+                
+                "item_code" => $row[0],
+                "arabic_translation" => $row[1],
+                "english_translation" => $row[2],
+                "username" => $row[3],
             ]);
         }
     }

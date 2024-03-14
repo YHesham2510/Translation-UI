@@ -3,14 +3,20 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\TranslateUsers;
-
+use Auth;
 class TranslateUserController extends Controller
 {
-    //
+
     public function index()
     {
-        $translateUsers = TranslateUsers::all();
-        return response()->json(['data' => $translateUsers]);
+        
+
+        if (Auth::check()) {
+            $username = Auth::user()->name;
+            $userTranslationData = TranslateUsers::where('username', $username)->get();
+            return response()->json(['data' => $userTranslationData]);
+        }
+        return response()->json(['error' => 'Unauthenticated'], 401);
     }
 
 }
