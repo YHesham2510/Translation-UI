@@ -180,10 +180,11 @@ function displayEnglishDescription(englishDescription) {
     }
   });
   
-  function updateDatabaseText(itemId, updatedText) {
+  function updateDatabaseText(itemId, updatedText, updatedBooleanValue) {
     let url = `http://localhost:8000/api/update-text/${itemId}`; 
     console.log("itemID: " + itemId);
-    let data = { text: updatedText };
+    console.log(updatedBooleanValue)
+    let data = { text: updatedText, booleanValue: updatedBooleanValue };
     fetch(url, {
         method: 'POST',
         headers: {

@@ -148,12 +148,27 @@
     const itemId = ID;
     const updatedText = textarea.value;
     console.log("Updated Text is "+ updatedText);
-    updateDatabaseText(itemId, updatedText);
-    const editButton = row.querySelector(".btn-success");
-    const saveButton = row.querySelector(".btn-primary");
-    editButton.disabled = true;
-    saveButton.disabled = true;
-  }
+    fetch(`http://localhost:8000/api/get-boolean-value/${itemId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            let updatedBooleanValue = data.is_updated;   
+            updatedBooleanValue = '1';         
+            console.log("bol val: " + updatedBooleanValue);
+            updateDatabaseText (itemId, updatedText, updatedBooleanValue);
+            const editButton = row.querySelector(".btn-success");
+            const saveButton = row.querySelector(".btn-primary");
+            editButton.disabled = true;
+            saveButton.disabled = true;
+        })
+        .catch(error => {
+            console.error('Error fetching boolean value:', error);
+        });
+}
  
   function viewDescription(row) {
     const englishDescription = row.cells[3].querySelector("textarea").value;

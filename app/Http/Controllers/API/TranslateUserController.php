@@ -18,5 +18,13 @@ class TranslateUserController extends Controller
         }
         return response()->json(['error' => 'Unauthenticated'], 401);
     }
+    public function getBooleanValue($itemId)
+{
+
+    $translation = TranslateUsers::findOrFail($itemId);
+    $booleanValue = $translation->is_updated; 
+    return response()->json(['is_updated' => $booleanValue]);
+}
+
 
 }
