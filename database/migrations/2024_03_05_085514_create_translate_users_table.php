@@ -17,6 +17,7 @@ return new class extends Migration
             $table ->text("arabic_translation");
             $table->text('english_translation');
             $table->string('username');
+            $table->boolean('is_updated')->default(false);
         });
     }
 

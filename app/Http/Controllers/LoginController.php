@@ -12,10 +12,7 @@ class LoginController extends Controller
 
     protected $redirectTo = '/home';
 
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
+
 
     public function showLoginForm()
     {
@@ -24,6 +21,6 @@ class LoginController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/');
+        return redirect('/login');
     }
 }

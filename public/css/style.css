@@ -44,10 +44,7 @@ table th {
 table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
-.modal-dialog {
-  max-height: calc(100vh - 30%);
-  overflow-y: auto;
-}
+
 /* Pagination styles */
 .pagination {
   margin-top: 20px !;
@@ -79,6 +76,10 @@ table tr:nth-child(even) {
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
 }
+.modal-body {
+  max-height: calc(80vh - 120px);
+  overflow-y: auto;
+}
  
 .modal-content {
   background-color: #fff;
@@ -86,6 +87,7 @@ table tr:nth-child(even) {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  height: 80vh;
 }
  
 .close {

@@ -1,4 +1,4 @@
-
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -20,21 +20,14 @@
     >
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <title>Excel File Importer with Dynamic Table</title>
   </head>
   <body>
-    @auth
-    <a href="{{ route('logout') }}"
-       onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style=" margin:10px 400px 10px" class="btn btn-primary">
-       Logout
-    </a>
 
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-        @csrf
-    </form>
-    @endauth
+@section("content")
     <div class="container">
       <!-- <button id="btn_import" class="btn btn-primary">Import Excel</button> -->
       <input type="file" id="excel_file" style="display: none" />
@@ -44,7 +37,7 @@
         cellspacing="0"
       >
       <thead>
-        <tr>
+        <tr class="dataPerRow">
           <th id="wanted">ID</th>
           <th id="wanted">Item Code</th>
           <th id="wanted">Arabic Translation</th>
@@ -57,15 +50,43 @@
       </table>
  
       <div id="EnglishDescription" class="modal"  tabindex="-1"  aria-hidden="true" >
-        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-dialog ">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Translation Descriptions</h5>
+            <h5
+                class="modal-title"
+                style="color: rgba(1, 86, 66); font-weight: bold"
+              >Translation Description</h5>
             </div>
             <div class="modal-body" id="englishDescriptionContent">
             </div>
             <div class="modal-footer">
               <button id="closeButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="Alert!" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content" style="height: 48vh">
+            <div class="modal-header">
+              <h5
+                class="modal-title"
+                style="color: rgba(1, 86, 66); font-weight: bold"
+              >
+                Alert!
+              </h5>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+              <button
+                id="closeButtonAlert"
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -107,24 +128,26 @@
   }
  
   function handleEditButtonClick(row) {
-    const textarea = row.querySelector("textarea");
+  const textareas = row.querySelectorAll("textarea");
+  textareas.forEach((textarea) => {
     textarea.disabled = false;
     textarea.style.color = "black";
     textarea.style.background = "white";
-    textarea.focus();
-  }
+  });
+}
  
   function handleSaveButtonClick(row) {
+    console.log(row);
     row.style.backgroundColor = "lightgray";
     const textarea = row.querySelector("textarea");
     textarea.disabled = true;
     textarea.style.background = "lightgray";
-    alert("You have edited this text successfully!\nAnd it can't be edited anymore.");
+    alert("Saved Successfully");
     const ID = row.querySelector("#wanted_id").innerText;
     console.log("Item ID is: "+ ID);
     const itemId = ID;
     const updatedText = textarea.value;
-    console.log("Updated Text is "+ updatedText)
+    console.log("Updated Text is "+ updatedText);
     updateDatabaseText(itemId, updatedText);
     const editButton = row.querySelector(".btn-success");
     const saveButton = row.querySelector(".btn-primary");
@@ -144,10 +167,10 @@
     const modalBody = modal.querySelector(".modal-body");
  
     modalBody.innerHTML = `
-      <p><strong>Item Code:</strong><p>${itemCode}</p></p>
-      <p><strong>English Description:</strong> <p>${englishDescription}</p></p>
-      <p><strong>Arabic Description:</strong> <p>${arabicDescription}</p></p>
-    `;
+  <p><strong style="color:rgba(1, 86, 66)">Item Code:</strong><p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">${itemCode}</p></p>
+  <p><strong style="color:rgba(1, 86, 66)">English Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);" >${englishDescription}</p></p>
+  <p><strong style="color:rgba(1, 86, 66)">Arabic Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220)" >${arabicDescription}</p></p>
+`;
     modal.classList.add("show");
     modal.style.display = "block";
  
@@ -195,6 +218,7 @@
   });
 
 </script>
-<button style=" margin:10px 400px 0px" id="exportButton" class="btn btn-primary">Export as CSV</button>
+<button style=" margin:10px 80px 0px" id="exportButton" class="btn btn-primary">Export as CSV</button>
+@endsection
 </body>
 </html>
