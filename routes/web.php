@@ -26,6 +26,7 @@ use App\Http\Controllers\API\TranslateUserController;
 
 // Auth::routes();
 Route::get('/api/translation', [TranslateUserController::class, 'index'])->name('translation.index')->middleware('auth');
+Route::get('/api/get-boolean-value/{itemId}', [TranslateUserController::class, 'getBooleanValue']);
 Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');

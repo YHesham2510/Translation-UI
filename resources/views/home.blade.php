@@ -144,6 +144,7 @@
  
   function handleSaveButtonClick(row) {
     row.style.backgroundColor = "lightgray";
+<<<<<<< HEAD
     const textareas = row.querySelector("textarea");
     textareas.forEach((textarea) => {
       textarea.disabled = true;
@@ -174,6 +175,38 @@
     modal.style.display = "none";
   });
   }
+=======
+    const textarea = row.querySelector("textarea");
+    textarea.disabled = true;
+    textarea.style.background = "lightgray";
+    alert("Saved Successfully");
+    const ID = row.querySelector("#wanted_id").innerText;
+    console.log("Item ID is: "+ ID);
+    const itemId = ID;
+    const updatedText = textarea.value;
+    console.log("Updated Text is "+ updatedText);
+    fetch(`http://localhost:8000/api/get-boolean-value/${itemId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            let updatedBooleanValue = data.is_updated;   
+            updatedBooleanValue = '1';         
+            console.log("bol val: " + updatedBooleanValue);
+            updateDatabaseText (itemId, updatedText, updatedBooleanValue);
+            const editButton = row.querySelector(".btn-success");
+            const saveButton = row.querySelector(".btn-primary");
+            editButton.disabled = true;
+            saveButton.disabled = true;
+        })
+        .catch(error => {
+            console.error('Error fetching boolean value:', error);
+        });
+}
+>>>>>>> 51935b0aa69d1b049987aaff235374b567304656
  
   function viewDescription(row) {
   const englishDescription = row.cells[3].querySelector("textarea").value;
