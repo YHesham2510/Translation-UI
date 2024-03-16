@@ -12,5 +12,9 @@
         "laravel-vite-plugin": "^1.0.0",
         "sass": "^1.56.1",
         "vite": "^5.0.0"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "nodejs": "^0.0.0"
     }
 }

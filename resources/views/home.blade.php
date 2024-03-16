@@ -95,16 +95,22 @@
         <!-- Pagination buttons will be inserted here -->
       </div>
   </div>
+  <button style=" margin:0px 175px" id="exportButton" class="btn btn-primary">Export as CSV</button>
 </div>
 <script>
-  let display = [];
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+  headers.append('Accept', 'application/json');
+
+  headers.append('Access-Control-Allow-Origin', 'http://localhost:8000');
+  headers.append('Access-Control-Allow-Credentials', 'true');
+
+  headers.append('GET', 'POST', 'OPTIONS');
   const itemsPerPage = 5;
-  let currentPage = 1;
- 
+  let currentPage = 1; 
   function displayTableRows() {
     const tableBody = document.getElementById('table_body');
     tableBody.innerHTML = '';
- 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const displayedItems = display.slice(startIndex, endIndex);
@@ -114,7 +120,7 @@
       row.innerHTML = `
         <td id="wanted_id">${item.id}</td>
         <td id="wanted_item_code">${item.item_code}</td>
-        <td id="wanted_arabic_translation">${item.arabic_translation}</td>
+        <td id="wanted_arabic_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
         <td id="wanted_english_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
         <td id="wanted_username">${item.username}</td>
         <td>
@@ -137,30 +143,48 @@
 }
  
   function handleSaveButtonClick(row) {
-    console.log(row);
     row.style.backgroundColor = "lightgray";
-    const textarea = row.querySelector("textarea");
-    textarea.disabled = true;
-    textarea.style.background = "lightgray";
-    alert("Saved Successfully");
-    const ID = row.querySelector("#wanted_id").innerText;
-    console.log("Item ID is: "+ ID);
-    const itemId = ID;
-    const updatedText = textarea.value;
-    console.log("Updated Text is "+ updatedText);
-    updateDatabaseText(itemId, updatedText);
-    const editButton = row.querySelector(".btn-success");
-    const saveButton = row.querySelector(".btn-primary");
-    editButton.disabled = true;
-    saveButton.disabled = true;
+    const textareas = row.querySelector("textarea");
+    textareas.forEach((textarea) => {
+      textarea.disabled = true;
+      textarea.style.background = "lightgray";
+      const ID = row.querySelector("#wanted_id").innerText;
+      const itemId = ID;
+      console.log("Item ID is: "+ ID);
+      const updatedText = textarea.value;
+      console.log("Updated Text is "+ updatedText);
+      updateDatabaseText(itemId, updatedText);
+      const editButton = row.querySelector(".btn-success");
+      const saveButton = row.querySelector(".btn-primary");
+      editButton.disabled = true;
+      saveButton.disabled = true;
+      
+    });
+    // alert("Saved Successfully");
+    const modal = document.getElementById("Alert!");
+    const modalBody = modal.querySelector(".modal-body");
+    modalBody.innerHTML = `<p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">You have edited this text successfully!<br/>And it can't be edited anymore.</p>`;
+
+    modal.classList.add("show");
+    modal.style.display = "block";
+
+    const closeButton = document.querySelector("#closeButtonAlert");
+    closeButton.addEventListener("click", function () {
+    modal.classList.remove("show");
+    modal.style.display = "none";
+  });
   }
  
   function viewDescription(row) {
-    const englishDescription = row.cells[3].querySelector("textarea").value;
-    const arabicDescription = row.cells[2].textContent;
-    const itemCode = row.cells[1].textContent;
-    displayTranslationDescription(itemCode,englishDescription, arabicDescription);
-  }
+  const englishDescription = row.cells[3].querySelector("textarea").value;
+  const arabicDescription = row.cells[2].querySelector("textarea").value;
+  const itemCode = row.cells[1].textContent;
+  displayTranslationDescription(
+    itemCode,
+    englishDescription,
+    arabicDescription
+  );
+}
  
   function displayTranslationDescription(itemCode,englishDescription, arabicDescription) {
     const modal = document.getElementById("EnglishDescription");
@@ -183,9 +207,9 @@
  
   function updatePagination() {
     const pagination = document.getElementById("pagination");
-  pagination.innerHTML = '';
-  const totalPages = Math.ceil(display.length / itemsPerPage);
-  for (let i = 1; i <= totalPages; i++) {
+    pagination.innerHTML = '';
+    const totalPages = Math.ceil(display.length / itemsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
     const li = document.createElement("li");
     li.classList.add("page-item");
     const link = document.createElement("a");
@@ -202,7 +226,7 @@
   }
   }
   document.addEventListener("DOMContentLoaded", function() {
-    fetch('http://localhost:8000/api/translation')
+    fetch('http://localhost:8000/api/translation',)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -218,7 +242,6 @@
   });
 
 </script>
-<button style=" margin:10px 80px 0px" id="exportButton" class="btn btn-primary">Export as CSV</button>
 @endsection
 </body>
 </html>
