@@ -1,174 +1,225 @@
-// const tableBody = document.getElementById("table_body");
-// const pageSize = 1; // Number of rows per page
-// let currentPage = 1;
- 
-// // function createCell(cellData, j, rowData) {
-// //   const cell = document.createElement("td");
- 
-// //   if (j === 1) {
-// //     // English Description column
-// //     const englishDescription = cellData;
-// //     const descriptionInput = createTextArea(englishDescription);
-// //     descriptionInput.addEventListener("blur", function () {
-// //       const newEnglishDescription = this.value;
-// //       rowData[j] = newEnglishDescription;
-// //     });
- 
-// //     cell.appendChild(descriptionInput);
-// //   } else {
-// //     cell.textContent = cellData;
-// //   }
- 
-// //   return cell;
-// // }
- 
-// // function createTextArea(englishDescription) {
-// //   const descriptionInput = document.createElement("textarea");
-// //   descriptionInput.type = "text";
-// //   descriptionInput.value = englishDescription;
-// //   descriptionInput.classList.add("editable-input", "form-control");
-// //   descriptionInput.style.width = "300px"; // Set width
-// //   descriptionInput.style.height = "200px"; // Set height
-// //   descriptionInput.style.resize = "none"; // Disable resize
-// //   return descriptionInput;
-// // }
- 
-// // function createButtons(rowData, row) {
-// //   const actionCell = document.createElement("td");
-// //   const viewButton = createButton("View");
-// //   viewButton.addEventListener("click", function () {
-// //     const englishDescription = rowData[1];
-// //     displayEnglishDescription(englishDescription);
-// //   });
- 
-// //   const saveButton = createButton("Save");
-// //   saveButton.addEventListener("click", function () {
-// //     const textarea = row.querySelector("textarea");
-// //     textarea.style.color = "black";
-// //     textarea.style.backgroundColor = "lightgreen";
-// //     textarea.disabled = true;
-// //   });
- 
-// //   const editButton = createButton("Edit");
-// //   editButton.addEventListener("click", function () {
-// //     const textarea = row.querySelector("textarea");
-// //     textarea.disabled = false;
-// //     textarea.style.color = "black";
-// //     textarea.style.backgroundColor = "white";
-// //     textarea.focus();
-// //   });
- 
-// //   actionCell.appendChild(viewButton);
-// //   actionCell.appendChild(editButton);
-// //   actionCell.appendChild(saveButton);
- 
-// //   return actionCell;
-// // }
- 
-// // function createButton(text) {
-// //   const button = document.createElement("button");
-// //   button.textContent = text;
-// //   button.classList.add("btn", "btn-primary", "btn-sm");
-// //   button.style.marginRight = "5px";
- 
-// //   return button;
-// // }
- 
-// function showPage(page) {
-//   tableBody.innerHTML = "";
-//   const start = (page - 1) * pageSize + 1;
-//   const end = Math.min(start + pageSize - 1, data.length - 1);
- 
-//   for (let i = start; i <= end; i++) {
-//     const rowData = data[i];
-//     const row = document.createElement("tr");
- 
-//     for (let j = 0; j < rowData.length + 1; j++) {
-//       const cellData = rowData[j];
-//       const cell = createCell(cellData, j, rowData);
-//       row.appendChild(cell);
-//     }
- 
-//     const actionCell = createButtons(rowData, row);
-//     row.appendChild(actionCell);
-//     tableBody.appendChild(row);
-//   }
-//   function updatePagination() {
-//     const pagination = document.getElementById("pagination");
-//     pagination.innerHTML = "";
- 
-//     const pageCount = Math.ceil((data.length - 1) / pageSize);
- 
-//     for (let i = 1; i <= pageCount; i++) {
-//       const li = document.createElement("li");
-//       li.classList.add("page-item");
-//       const link = document.createElement("a");
-//       link.classList.add("page-link");
-//       link.href = "#";
-//       link.textContent = i;
-//       link.addEventListener("click", function () {
-//         currentPage = i;
-//         showPage(currentPage);
-//         updatePagination();
-//       });
-//       li.appendChild(link);
-//       pagination.appendChild(li);
-//     }
-//   }
- 
-//   showPage(currentPage);
-//   updatePagination();
-// }
- 
-function displayEnglishDescription(englishDescription) {
-    const modal = document.getElementById("EnglishDescription");
-    const modalTitle = modal.querySelector(".modal-title");
+const itemsPerPage = 5;
+let currentPage = 1;
+
+function displayTableRows() {
+    const tableBody = document.getElementById("table_body");
+    tableBody.innerHTML = "";
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const displayedItems = display.slice(startIndex, endIndex);
+
+    displayedItems.forEach((item) => {
+        const row = document.createElement("tr");
+        // console.log(item.is_updated==1);
+        if (item.is_updated == 1) {
+            row.classList.add("table-secondary");
+            // console.log(row.classList);
+            row.innerHTML = `
+          <td id="wanted_id">${item.id}</td>
+          <td id="wanted_item_code">${item.item_code}</td>
+          <td id="wanted_arabic_translation"><textarea class="table-secondary form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
+          <td id="wanted_english_translation"><textarea class="table-secondary form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
+          <td id="wanted_username">${item.username}</td>
+          <td>
+            <button class="btn btn-success" disabled onclick="handleEditButtonClick(this.parentNode.parentNode)">Edit</button>
+            <button class="btn btn-primary" disabled onclick="handleSaveButtonClick(this.parentNode.parentNode)">Save</button>
+            <button class="btn btn-primary" onclick="viewDescription(this.parentNode.parentNode)">View</button>
+          </td>
+        `;
+        } else {
+            row.innerHTML = `
+        <td id="wanted_id">${item.id}</td>
+        <td id="wanted_item_code">${item.item_code}</td>
+        <td id="wanted_arabic_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
+        <td id="wanted_english_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
+        <td id="wanted_username">${item.username}</td>
+        <td>
+          <button class="btn btn-success" onclick="handleEditButtonClick(this.parentNode.parentNode)">Edit</button>
+          <button class="btn btn-primary" onclick="handleSaveButtonClick(this.parentNode.parentNode)">Save</button>
+          <button class="btn btn-primary" onclick="viewDescription(this.parentNode.parentNode)">View</button>
+        </td>
+      `;
+        }
+        tableBody.appendChild(row);
+    });
+}
+
+function handleEditButtonClick(row) {
+    const textareas = row.querySelectorAll("textarea");
+    textareas.forEach((textarea) => {
+        textarea.disabled = false;
+        textarea.style.color = "black";
+        textarea.style.background = "white";
+    });
+}
+
+function handleSaveButtonClick(row) {
+    // row.style.backgroundColor = "lightgray";
+    const textareas = row.querySelectorAll("textarea");
+    textareas.forEach((textarea) => {
+        textarea.disabled = true;
+        textarea.style.background = "lightgray";
+        const ID = row.querySelector("#wanted_id").innerText;
+        console.log("Item ID is: " + ID);
+        const itemId = ID;
+        const updatedText = textarea.value;
+        console.log("Updated Text is " + updatedText);
+        fetch(`http://localhost:8000/api/get-boolean-value/${itemId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                let updatedBooleanValue = data.is_updated;
+                updatedBooleanValue = "1";
+                console.log("bol val: " + updatedBooleanValue);
+                updateDatabaseText(itemId, updatedText, updatedBooleanValue);
+                const editButton = row.querySelector(".btn-success");
+                const saveButton = row.querySelector(".btn-primary");
+                editButton.disabled = true;
+                saveButton.disabled = true;
+            })
+            .catch((error) => {
+                console.error("Error fetching boolean value:", error);
+            });
+    });
+    const modal = document.getElementById("Alert!");
     const modalBody = modal.querySelector(".modal-body");
-   
-    modalTitle.textContent = "English Description";
-    modalBody.textContent = englishDescription;
-   
+    modalBody.innerHTML = `<p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">You have edited this text successfully!<br/>And it can't be edited anymore.</p>`;
+
     modal.classList.add("show");
     modal.style.display = "block";
-   
+
+    const closeButton = document.querySelector("#closeButtonAlert");
+    closeButton.addEventListener("click", function () {
+        modal.classList.remove("show");
+        modal.style.display = "none";
+    });
+}
+
+function viewDescription(row) {
+    const englishDescription = row.cells[3].textContent;
+    const arabicDescription = row.cells[2].textContent;
+    const itemCode = row.cells[1].textContent;
+    displayTranslationDescription(
+        itemCode,
+        englishDescription,
+        arabicDescription
+    );
+}
+
+function displayTranslationDescription(
+    itemCode,
+    englishDescription,
+    arabicDescription
+) {
+    const modal = document.getElementById("EnglishDescription");
+    const modalBody = modal.querySelector(".modal-body");
+
+    modalBody.innerHTML = `
+  <p><strong style="color:rgba(1, 86, 66)">Item Code:</strong><p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">${itemCode}</p></p>
+  <p><strong style="color:rgba(1, 86, 66)">English Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);" >${englishDescription}</p></p>
+  <p><strong style="color:rgba(1, 86, 66)">Arabic Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220)" >${arabicDescription}</p></p>
+`;
+    modal.classList.add("show");
+    modal.style.display = "block";
+
     const closeButton = document.querySelector("#closeButton");
     closeButton.addEventListener("click", function () {
-      modal.classList.remove("show");
-      modal.style.display = "none";
+        modal.classList.remove("show");
+        modal.style.display = "none";
     });
-  }
-   
-  document.addEventListener("DOMContentLoaded", function () {
-    document
-      .getElementById("exportButton")
-      .addEventListener("click", function () {
-        exportToCsv("translate_users.csv");
-      });
-   
-    function exportToCsv(filename) {
-      
-      const table = document.getElementById("table_output");
-      const header = ["ID", "Item Code", "Arabic Translation", "English Translation", "Username"];
-      const rows = [header];
-   
-      for (const row of table.getElementsByTagName('tbody')[0].getElementsByTagName('tr')) {
+}
+
+function updatePagination() {
+    const pagination = document.getElementById("pagination");
+    pagination.innerHTML = "";
+    const totalPages = Math.ceil(display.length / itemsPerPage);
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement("li");
+        li.classList.add("page-item");
+        const link = document.createElement("a");
+        link.classList.add("page-link");
+        link.textContent = i;
+        link.href = "#";
+        link.addEventListener("click", function () {
+            currentPage = i;
+            displayTableRows();
+            updatePagination();
+        });
+        li.appendChild(link);
+        pagination.appendChild(li);
+    }
+}
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("http://localhost:8000/api/translation")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            display = data.data;
+            displayTableRows();
+            updatePagination();
+        })
+        .catch((error) => console.error("Error fetching data:", error));
+});
+document.getElementById("exportButton").addEventListener("click", function () {
+    exportToCsv("translate_users.csv");
+});
+
+function exportToCsv(filename) {
+    const table = document.getElementById("table_output");
+    const header = [
+        "ID",
+        "Item Code",
+        "Arabic Translation",
+        "English Translation",
+        "Username",
+    ];
+    const rows = [header];
+
+    for (const row of table
+        .getElementsByTagName("tbody")[0]
+        .getElementsByTagName("tr")) {
         const rowData = [];
-        
+
         // Fetch specific data using getElementById or any other method you prefer
-        const id = row.querySelector('#wanted_id').textContent.trim();
-        const itemCode = row.querySelector('#wanted_item_code').textContent.trim();
-        const arabicTranslation = row.querySelector('#wanted_arabic_translation').textContent.trim();
-        const englishTranslation = row.querySelector('#wanted_english_translation').textContent.trim();
-        const username = row.querySelector('#wanted_username').textContent.trim();
-        rowData.push(id, itemCode, arabicTranslation, englishTranslation, username);
-        
+        const id = row.querySelector("#wanted_id").textContent.trim();
+        const itemCode = row
+            .querySelector("#wanted_item_code")
+            .textContent.trim();
+        const arabicTranslation = row
+            .querySelector("#wanted_arabic_translation")
+            .textContent.trim();
+        const englishTranslation = row
+            .querySelector("#wanted_english_translation")
+            .textContent.trim();
+        const username = row
+            .querySelector("#wanted_username")
+            .textContent.trim();
+        rowData.push(
+            id,
+            itemCode,
+            arabicTranslation,
+            englishTranslation,
+            username
+        );
+
         rows.push(rowData);
     }
-  
-      const csvContent = Papa.unparse(rows, { encoding: "UTF-8" });
-      const blob = new Blob([String.fromCharCode(0xFEFF), csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement("a");
-      if (link.download !== undefined) {
+
+    const csvContent = Papa.unparse(rows, { encoding: "UTF-8" });
+    const blob = new Blob([String.fromCharCode(0xfeff), csvContent], {
+        type: "text/csv;charset=utf-8;",
+    });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
         const url = URL.createObjectURL(blob);
         link.setAttribute("href", url);
         link.setAttribute("download", filename);
@@ -176,34 +227,37 @@ function displayEnglishDescription(englishDescription) {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      }
     }
-  });
-  
-  function updateDatabaseText(itemId, updatedText, updatedBooleanValue) {
-    let url = `http://localhost:8000/api/update-text/${itemId}`; 
+}
+
+function updateDatabaseText(itemId, updatedText, updatedBooleanValue) {
+    let url = `http://localhost:8000/api/update-text/${itemId}`;
     console.log("itemID: " + itemId);
-    console.log(updatedBooleanValue)
-    let data = { text: updatedText, booleanValue: updatedBooleanValue };
+    console.log(updatedBooleanValue);
+    let data = {
+        text: updatedText,
+        booleanValue: updatedBooleanValue,
+        // arabic: updatedArabic,
+    };
     fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
         },
         body: JSON.stringify(data),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Database updated successfully:', data);
-    })
-    .catch(error => {
-        console.error('Error updating database:', error);
-    });
-  }
-   
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Database updated successfully:", data);
+        })
+        .catch((error) => {
+            console.error("Error updating database:", error);
+        });
+}

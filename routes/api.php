@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TranslateUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\TranslateUserController;
@@ -17,6 +18,9 @@ use App\Http\Controllers\ApiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/', function () {
+    return response()->json(['message' => 'Welcome to the API']);
+});
 Route::get("/translation", [TranslateUserController::class, 'index']);
 Route::post('/update-text/{id}', [ApiController::class, 'updateText']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

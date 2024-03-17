@@ -1,5 +1,5 @@
-@extends('layouts.app')
 <!DOCTYPE html>
+@extends('layouts.app')
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -11,8 +11,8 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-    <link rel="icon" href="./exceIcon.png" type="favicon/ico" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="icon" href="/exceIcon.png" type="favicon/ico" />
     <script
       type="text/javascript"
       src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"
@@ -29,7 +29,6 @@
 
 @section("content")
     <div class="container">
-      <!-- <button id="btn_import" class="btn btn-primary">Import Excel</button> -->
       <input type="file" id="excel_file" style="display: none" />
       <table
         id="table_output"
@@ -92,189 +91,10 @@
         </div>
       </div>
       <div id="pagination" class="pagination">
-        <!-- Pagination buttons will be inserted here -->
       </div>
   </div>
-  <button style=" margin:0px 175px" id="exportButton" class="btn btn-primary">Export as CSV</button>
 </div>
-<script>
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-  headers.append('Accept', 'application/json');
-
-  headers.append('Access-Control-Allow-Origin', 'http://localhost:8000');
-  headers.append('Access-Control-Allow-Credentials', 'true');
-
-  headers.append('GET', 'POST', 'OPTIONS');
-  const itemsPerPage = 5;
-  let currentPage = 1; 
-  function displayTableRows() {
-    const tableBody = document.getElementById('table_body');
-    tableBody.innerHTML = '';
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const displayedItems = display.slice(startIndex, endIndex);
- 
-    displayedItems.forEach(item => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td id="wanted_id">${item.id}</td>
-        <td id="wanted_item_code">${item.item_code}</td>
-        <td id="wanted_arabic_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
-        <td id="wanted_english_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
-        <td id="wanted_username">${item.username}</td>
-        <td>
-          <button class="btn btn-success" onclick="handleEditButtonClick(this.parentNode.parentNode)">Edit</button>
-          <button class="btn btn-primary" onclick="handleSaveButtonClick(this.parentNode.parentNode)">Save</button>
-          <button class="btn btn-primary" onclick="viewDescription(this.parentNode.parentNode)">View</button>
-        </td>
-      `;
-      tableBody.appendChild(row);
-    });
-  }
- 
-  function handleEditButtonClick(row) {
-  const textareas = row.querySelectorAll("textarea");
-  textareas.forEach((textarea) => {
-    textarea.disabled = false;
-    textarea.style.color = "black";
-    textarea.style.background = "white";
-  });
-}
- 
-  function handleSaveButtonClick(row) {
-    row.style.backgroundColor = "lightgray";
-<<<<<<< HEAD
-    const textareas = row.querySelector("textarea");
-    textareas.forEach((textarea) => {
-      textarea.disabled = true;
-      textarea.style.background = "lightgray";
-      const ID = row.querySelector("#wanted_id").innerText;
-      const itemId = ID;
-      console.log("Item ID is: "+ ID);
-      const updatedText = textarea.value;
-      console.log("Updated Text is "+ updatedText);
-      updateDatabaseText(itemId, updatedText);
-      const editButton = row.querySelector(".btn-success");
-      const saveButton = row.querySelector(".btn-primary");
-      editButton.disabled = true;
-      saveButton.disabled = true;
-      
-    });
-    // alert("Saved Successfully");
-    const modal = document.getElementById("Alert!");
-    const modalBody = modal.querySelector(".modal-body");
-    modalBody.innerHTML = `<p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">You have edited this text successfully!<br/>And it can't be edited anymore.</p>`;
-
-    modal.classList.add("show");
-    modal.style.display = "block";
-
-    const closeButton = document.querySelector("#closeButtonAlert");
-    closeButton.addEventListener("click", function () {
-    modal.classList.remove("show");
-    modal.style.display = "none";
-  });
-  }
-=======
-    const textarea = row.querySelector("textarea");
-    textarea.disabled = true;
-    textarea.style.background = "lightgray";
-    alert("Saved Successfully");
-    const ID = row.querySelector("#wanted_id").innerText;
-    console.log("Item ID is: "+ ID);
-    const itemId = ID;
-    const updatedText = textarea.value;
-    console.log("Updated Text is "+ updatedText);
-    fetch(`http://localhost:8000/api/get-boolean-value/${itemId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            let updatedBooleanValue = data.is_updated;   
-            updatedBooleanValue = '1';         
-            console.log("bol val: " + updatedBooleanValue);
-            updateDatabaseText (itemId, updatedText, updatedBooleanValue);
-            const editButton = row.querySelector(".btn-success");
-            const saveButton = row.querySelector(".btn-primary");
-            editButton.disabled = true;
-            saveButton.disabled = true;
-        })
-        .catch(error => {
-            console.error('Error fetching boolean value:', error);
-        });
-}
->>>>>>> 51935b0aa69d1b049987aaff235374b567304656
- 
-  function viewDescription(row) {
-  const englishDescription = row.cells[3].querySelector("textarea").value;
-  const arabicDescription = row.cells[2].querySelector("textarea").value;
-  const itemCode = row.cells[1].textContent;
-  displayTranslationDescription(
-    itemCode,
-    englishDescription,
-    arabicDescription
-  );
-}
- 
-  function displayTranslationDescription(itemCode,englishDescription, arabicDescription) {
-    const modal = document.getElementById("EnglishDescription");
-    const modalBody = modal.querySelector(".modal-body");
- 
-    modalBody.innerHTML = `
-  <p><strong style="color:rgba(1, 86, 66)">Item Code:</strong><p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">${itemCode}</p></p>
-  <p><strong style="color:rgba(1, 86, 66)">English Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);" >${englishDescription}</p></p>
-  <p><strong style="color:rgba(1, 86, 66)">Arabic Description:</strong> <p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220)" >${arabicDescription}</p></p>
-`;
-    modal.classList.add("show");
-    modal.style.display = "block";
- 
-    const closeButton = document.querySelector("#closeButton");
-    closeButton.addEventListener("click", function () {
-      modal.classList.remove("show");
-      modal.style.display = "none";
-    });
-}
- 
-  function updatePagination() {
-    const pagination = document.getElementById("pagination");
-    pagination.innerHTML = '';
-    const totalPages = Math.ceil(display.length / itemsPerPage);
-    for (let i = 1; i <= totalPages; i++) {
-    const li = document.createElement("li");
-    li.classList.add("page-item");
-    const link = document.createElement("a");
-    link.classList.add("page-link");
-    link.textContent = i;
-    link.href = "#";
-    link.addEventListener("click", function() {
-      currentPage = i;
-      displayTableRows();
-      updatePagination();
-    });
-    li.appendChild(link);
-    pagination.appendChild(li);
-  }
-  }
-  document.addEventListener("DOMContentLoaded", function() {
-    fetch('http://localhost:8000/api/translation',)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        display = data.data;
-        displayTableRows();
-        updatePagination();
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  });
-
-</script>
+<button style=" margin: 0px 170px  " id="exportButton" class="btn btn-primary">Export as CSV</button>
 @endsection
 </body>
 </html>
