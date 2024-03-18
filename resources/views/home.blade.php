@@ -12,7 +12,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="icon" href="/exceIcon.png" type="favicon/ico" />
+    <link rel="icon" href="/exceIcon.png" type="favicon/icon" />
     <script
       type="text/javascript"
       src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"
