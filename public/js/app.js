@@ -1,13 +1,13 @@
 const itemsPerPage = 5;
 let currentPage = 1;
-
+let tableData = [];
 function displayTableRows() {
     const tableBody = document.getElementById("table_body");
     tableBody.innerHTML = "";
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const displayedItems = display.slice(startIndex, endIndex);
+    const displayedItems = tableData.slice(startIndex, endIndex);
 
     displayedItems.forEach((item) => {
         const row = document.createElement("tr");
@@ -18,8 +18,8 @@ function displayTableRows() {
             row.innerHTML = `
           <td id="wanted_id">${item.id}</td>
           <td id="wanted_item_code">${item.item_code}</td>
-          <td id="wanted_arabic_translation"><textarea class="table-secondary form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
-          <td id="wanted_english_translation"><textarea class="table-secondary form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
+          <td id="wanted_arabic_translation"><textarea class=" form-control" rows="8" cols="120" disabled style=resize:none; background-color:grey;>${item.arabic_translation}</textarea></td>
+          <td id="wanted_english_translation"><textarea class=" form-control" rows="8" cols="120" disabled style=resize:none;background-color:grey;>${item.english_translation}</textarea></td>
           <td id="wanted_username">${item.username}</td>
           <td>
             <button class="btn btn-success" disabled onclick="handleEditButtonClick(this.parentNode.parentNode)">Edit</button>
@@ -55,7 +55,6 @@ function handleEditButtonClick(row) {
 }
 
 function handleSaveButtonClick(row) {
-    // row.style.backgroundColor = "lightgray";
     const textareas = row.querySelectorAll("textarea");
     textareas.forEach((textarea) => {
         textarea.disabled = true;
@@ -87,17 +86,13 @@ function handleSaveButtonClick(row) {
 
       
     });
-    const modal = document.getElementById("Alert!");
+    const modal = document.getElementById("myModal");
     const modalBody = modal.querySelector(".modal-body");
-    modalBody.innerHTML = `<p style="border:2px solid rgba(229, 231, 235);border-radius:15px;padding:20px;background-color:rgba(234, 245, 220);">You have edited this text successfully!<br/>And it can't be edited anymore.</p>`;
-
+    modalBody.innerHTML = `<p>You have edited this text successfully!<br/>And it can't be edited anymore.</p>`;
     modal.classList.add("show");
-    modal.style.display = "block";
-
     const closeButton = document.querySelector("#closeButtonAlert");
     closeButton.addEventListener("click", function () {
         modal.classList.remove("show");
-        modal.style.display = "none";
     });
 }
 
@@ -138,7 +133,7 @@ function displayTranslationDescription(
 function updatePagination() {
     const pagination = document.getElementById("pagination");
     pagination.innerHTML = "";
-    const totalPages = Math.ceil(display.length / itemsPerPage);
+    const totalPages = Math.ceil(tableData.length / itemsPerPage);
     for (let i = 1; i <= totalPages; i++) {
         const li = document.createElement("li");
         li.classList.add("page-item");
@@ -155,6 +150,7 @@ function updatePagination() {
         pagination.appendChild(li);
     }
 }
+
 document.addEventListener("DOMContentLoaded", function () {
     fetch("http://localhost:8000/api/translation")
         .then((response) => {
@@ -164,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then((data) => {
-            display = data.data;
+            tableData = data.data;
             displayTableRows();
             updatePagination();
         })
@@ -190,7 +186,6 @@ function exportToCsv(filename) {
         .getElementsByTagName("tr")) {
         const rowData = [];
 
-        // Fetch specific data using getElementById or any other method you prefer
         const id = row.querySelector("#wanted_id").textContent.trim();
         const itemCode = row
             .querySelector("#wanted_item_code")
@@ -252,10 +247,15 @@ function updateDatabaseText(itemId, updatedText, updatedBooleanValue,updatedArab
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
+
             return response.json();
         })
         .then((data) => {
-            console.log("Database updated successfully:", data);
+            const recordIndex = tableData.findIndex(
+                (item) => item.id === parseInt(itemId)
+            );
+            console.log(data, tableData[recordIndex]);
+            tableData[recordIndex] = data.data;
         })
         .catch((error) => {
             console.error("Error updating database:", error);

@@ -10,15 +10,13 @@
     <!-- <link rel="icon" href="/exceIcon.png" type="favicon/ico" /> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
     <title>Excel File Importer with Dynamic Table</title>
   </head>
   <body>
 
 @section("content")
-    <div class="container">
-      <input type="file" id="excel_file" style="display: none" />
+<div class="container">
       <table
         id="table_output"
         class=" table table-striped table-bordered table-sm"
@@ -54,35 +52,29 @@
           </div>
         </div>
       </div>
-      <div id="Alert!" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content" style="height: 48vh">
-            <div class="modal-header">
-              <h5
-                class="modal-title"
-                style="color: rgba(1, 86, 66); font-weight: bold"
-              >
-                Alert!
-              </h5>
-            </div>
-            <div class="modal-body"></div>
-            <div class="modal-footer">
-              <button
-                id="closeButtonAlert"
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
+<div id="myModal" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content" style="height: 300px;">
+			<div class="modal-header">
+				<div class="icon-box">
+					<i class="material-icons">&#xE5CD;</i>
+				</div>				
+				<h4 class="modal-title w-100">Sorry!</h4>	
+			</div>
+			<div class="modal-body">
+				<p class="text-center">Your transaction has failed. Please go back and try again.</p>
+			</div>
+			<div class="modal-footer">
+				<button id="closeButtonAlert" class="btn btn-danger btn-block" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
       <div id="pagination" class="pagination">
       </div>
+      </div>
   </div>
-</div>
 <button style=" margin: 0px 170px  " id="exportButton" class="btn btn-primary">Export as CSV</button>
 @endsection
 </body>
