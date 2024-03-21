@@ -31,7 +31,7 @@ function displayTableRows() {
             row.innerHTML = `
         <td id="wanted_id">${item.id}</td>
         <td id="wanted_item_code">${item.item_code}</td>
-        <td id="wanted_arabic_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.arabic_translation}</textarea></td>
+        <td id="wanted_arabic_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none id="arabic">${item.arabic_translation}</textarea></td>
         <td id="wanted_english_translation"><textarea class="form-control" rows="8" cols="120" disabled style=resize:none>${item.english_translation}</textarea></td>
         <td id="wanted_username">${item.username}</td>
         <td>
@@ -61,30 +61,31 @@ function handleSaveButtonClick(row) {
         textarea.disabled = true;
         textarea.style.background = "lightgray";
         const ID = row.querySelector("#wanted_id").innerText;
-        console.log("Item ID is: " + ID);
         const itemId = ID;
         const updatedText = textarea.value;
-        console.log("Updated Text is " + updatedText);
-        fetch(`http://localhost:8000/api/get-boolean-value/${itemId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                let updatedBooleanValue = data.is_updated;
-                updatedBooleanValue = "1";
-                console.log("bol val: " + updatedBooleanValue);
-                updateDatabaseText(itemId, updatedText, updatedBooleanValue);
-                const editButton = row.querySelector(".btn-success");
-                const saveButton = row.querySelector(".btn-primary");
-                editButton.disabled = true;
-                saveButton.disabled = true;
-            })
-            .catch((error) => {
-                console.error("Error fetching boolean value:", error);
-            });
+        const arabic = row.querySelector("#arabic").value;
+        fetch(`http://localhost:8000/api/get-boolean-value/${ID}`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            let updatedBooleanValue = data.is_updated;
+            updatedBooleanValue = "1";
+            updateDatabaseText(itemId, updatedText, updatedBooleanValue,arabic);
+            const editButton = row.querySelector(".btn-success");
+            const saveButton = row.querySelector(".btn-primary");
+            editButton.disabled = true;
+            saveButton.disabled = true;
+        })
+        .catch((error) => {
+            console.error("Error fetching boolean value:", error);
+        });
+
+
+      
     });
     const modal = document.getElementById("Alert!");
     const modalBody = modal.querySelector(".modal-body");
@@ -230,14 +231,13 @@ function exportToCsv(filename) {
     }
 }
 
-function updateDatabaseText(itemId, updatedText, updatedBooleanValue) {
+function updateDatabaseText(itemId, updatedText, updatedBooleanValue,updatedArabic) {
     let url = `http://localhost:8000/api/update-text/${itemId}`;
-    console.log("itemID: " + itemId);
-    console.log(updatedBooleanValue);
+
     let data = {
         text: updatedText,
         booleanValue: updatedBooleanValue,
-        // arabic: updatedArabic,
+        arabic: updatedArabic,
     };
     fetch(url, {
         method: "POST",

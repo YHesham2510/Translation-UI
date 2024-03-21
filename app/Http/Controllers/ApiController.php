@@ -12,13 +12,13 @@ class ApiController extends Controller
     {
         $text = $request->input('text');
         $booleanValue = $request->input('booleanValue');
-        // $arabic = $request->input('arabic');
+        $arabic = $request->input('arabic');
         $item = TranslateUsers::find($id);
 
         if (!$item) {
             return response()->json(['error' => 'Item not found'], 404);
         }
-        // $item->arabic_translation = $arabic;
+        $item->arabic_translation = $arabic;
         $item->is_updated = $booleanValue;
         $item->english_translation = $text;
         $item->save();

@@ -16,7 +16,7 @@ class translationSeeder extends Seeder
     public function run(): void
     {
         //
-        $csvFile = file("D:/translate_users.csv");
+        $csvFile = file("D:/translation.csv");
         $data = array_map("str_getcsv", $csvFile);
 
         Log::info($data);
