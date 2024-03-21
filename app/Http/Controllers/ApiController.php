@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TranslateUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
@@ -22,7 +23,6 @@ class ApiController extends Controller
         $item->is_updated = $booleanValue;
         $item->english_translation = $text;
         $item->save();
-
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'data' => $item]);
     }
 }
